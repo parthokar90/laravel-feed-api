@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Comment extends Model
 {
@@ -14,19 +16,22 @@ class Comment extends Model
     {
         return $this->belongsTo(User::class);
     }
-    
     public function post()
     {
         return $this->belongsTo(Post::class);
     }
-
     public function replies()
     {
         return $this->hasMany(Reply::class)->latest();
     }
-
     public function likes()
     {
         return $this->morphMany(Like::class, 'likeable');
+    }
+
+    public function isLikedBy(?User $user): bool
+    {
+        if (!$user) return false;
+        return $this->likes()->where('user_id', $user->id)->exists();
     }
 }
