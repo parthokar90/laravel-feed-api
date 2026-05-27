@@ -198,7 +198,7 @@ http://localhost:8000
 ## Run in background
 
 ```bash
-Run in Background
+docker compose up -d
 ```
 
 
