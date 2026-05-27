@@ -51,19 +51,19 @@ Scalable relational database structure
 
 Main tables:
 
-users
-posts
-comments
-comment_replies
-likes
-post_images
+- users
+- posts
+- comments
+- comment_replies
+- likes
+- post_images
 
 Relationships:
 
-User → Posts (1:M)
-Post → Comments (1:M)
-Comment → Replies (1:M)
-Polymorphic Likes system
+- User → Posts 
+- Post → Comments 
+- Comment → Replies 
+- Polymorphic Likes system
 
 ## Tech Stack
 
