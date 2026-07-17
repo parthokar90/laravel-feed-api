@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->text('title');
+            $table->string('attachment',255)->nullable();
             $table->enum('visibility', ['public', 'private'])->default('public');
             $table->unsignedBigInteger('likes_count')->default(0);
             $table->unsignedBigInteger('comments_count')->default(0);
             $table->timestamps();
             $table->softDeletes();
-
             $table->index(['user_id', 'created_at']);
             $table->index(['visibility', 'created_at']);
         });

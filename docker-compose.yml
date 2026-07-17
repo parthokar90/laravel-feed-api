@@ -1,50 +1,51 @@
-version: "3.9"
-
 services:
-  app:
-    build: .
-    container_name: laravel-app
+  social_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: social_api_app
     restart: unless-stopped
     working_dir: /var/www
     volumes:
       - .:/var/www
-    depends_on:
-      - db
     networks:
-      - laravel
+      - social_network
 
-  nginx:
-    image: nginx:latest
-    container_name: laravel-nginx
+  # 2. Nginx Web Server (Port 8082 used to avoid conflict)
+  social_nginx:
+    image: nginx:alpine
+    container_name: social_api_nginx
     restart: unless-stopped
     ports:
-      - "8000:80"
+      - "8082:80"
     volumes:
       - .:/var/www
-      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/nginx:/etc/nginx/conf.d/
+    networks:
+      - social_network
     depends_on:
-      - app
-    networks:
-      - laravel
+      - social_app
 
-  db:
+  # 3. MySQL Database Service (Port 33063 used to avoid conflict)
+  social_db:
     image: mysql:8.0
-    container_name: laravel-db
+    container_name: social_api_db
     restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: 
-      MYSQL_ROOT_PASSWORD: 
-      MYSQL_USER: 
-      MYSQL_PASSWORD: 
     ports:
-      - "3306:3306"
+      - "33063:3306"
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - dbdata:/var/lib/mysql
+      - social_api_dbdata:/var/lib/mysql
     networks:
-      - laravel
-
-volumes:
-  dbdata:
+      - social_network
 
 networks:
-  laravel:
+  social_network:
+    driver: bridge
+
+volumes:
+  social_api_dbdata:
+    driver: local
